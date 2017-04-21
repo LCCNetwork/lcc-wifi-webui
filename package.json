@@ -1,0 +1,28 @@
+{
+	"dependencies": {
+		"jquery": "*",
+		"firebase": "*",
+		"node-fetch": "*",
+		"imagesloaded": "*",
+		"progressbar.js": "*",
+		"ejs": "*",
+		"express": "*",
+		"whatwg-fetch": "*",
+		"promise-polyfill": "*",
+		"request": "*",
+		"request-promise": "*",
+		"request-promise-native": "*"
+	},
+	"name": "lcc-wifi-webui",
+	"version": "1.0.0",
+	"main": "index.js",
+	"devDependencies": {
+		"standard": "*"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "MIT",
+	"description": ""
+}
