@@ -1,8 +1,6 @@
 const $ = require('jquery')
 const fb = require('firebase')
 const gAuthProvider = new fb.auth.GoogleAuthProvider()
-const imagesLoaded = require('imagesloaded')
-const ProgressBar = require('progressbar.js')
 
 let page = sessionStorage.getItem('page')
 if (typeof location.origin === 'undefined') location.origin = location.protocol + '//' + location.host

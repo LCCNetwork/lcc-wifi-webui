@@ -11,7 +11,8 @@
 		"promise-polyfill": "*",
 		"request": "*",
 		"request-promise": "*",
-		"request-promise-native": "*"
+		"request-promise-native": "*",
+		"jquery-slim": "*"
 	},
 	"name": "lcc-wifi-webui",
 	"version": "1.0.0",
