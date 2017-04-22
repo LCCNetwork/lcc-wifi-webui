@@ -50,23 +50,35 @@ body {
 }
 
 .wrapper-body {
-    text-align: center;
+    text-align: justify;
+    text-justify: inter-word;
     font-size: 28px;
-    padding: 0 200px 30px;
+    padding: 0 150px 30px;
+}
+
+.body-info-webui {
+    position: relative;
+    width: 100%;
+    left: 49%;
+    transform: translate(-50%);
+    margin: 0 auto;
+    line-height: 65px;
 }
 
 .wrapper-dl {
+    background-color: #5f5f5f;
+
     position: absolute;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    flex-shrink: 0;
     justify-content: center;
     align-items: center;
+    box-shadow: 1px 1px 12px #000;
 
     width: 100%;
     height: auto;
-
-    overflow: auto;
 }
 
 .wrapper-footer {
@@ -78,6 +90,7 @@ body {
 }
 
 .footer-copyright {
+    padding-top: 10px;
     width: 100%;
     text-align: center;
 }
@@ -89,7 +102,7 @@ body {
     display: block;
     height: 65px;
     width: 300px;
-    margin: 0 10px 15px;
+    margin: 15px 10px 15px;
 
     box-shadow: 1px 1px 5px #141414;
     background-color: #424242;

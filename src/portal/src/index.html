@@ -29,9 +29,14 @@
                 <p class="2">
                     If you have any devices that cannot use the apps provided, please contact us through email at either brianx0011@gmail.com or yayes.aidan@gmail.com.
                     The data used will count against your account, and you will be able to monitor your usage through other devices with the applications
-                    installed. If you have not signed up, and you still wish to use our service, please contact us by the emails above.
+                    installed, or from the Web Interface. If you have not signed up, and you still wish to use our service, please contact us by the emails above.
                 </p>
+
             </div>
+
+            <a href="webui" class="body-info-webui button-bg">
+                <p class="button-txt">LINK TO WEB INTERFACE</p>
+            </a>
         </div>
 
         <div class="wrapper-dl">
@@ -43,11 +48,11 @@
                 <p class="button-txt">MAC DOWNLOAD</p>
             </a>
 
-            <a href="/dist/linux.zip" class="body-dl-linux button-bg">
+            <a href="dist/linux.zip" class="body-dl-linux button-bg">
                 <p class="button-txt">LINUX DOWNLOAD</p>
             </a>
 
-            <a href="/dist/lcc-wifi.apk" class="body-dl-android button-bg">
+            <a href="dist/lcc-wifi.apk" class="body-dl-android button-bg">
                 <p class="button-txt">ANDROID DOWNLOAD</p>
             </a>
 
@@ -65,7 +70,6 @@
     // Loader fade out
     let loader = document.getElementsByClassName('wrapper-loader')[0]
 
-
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
           loader.style.opacity = 0
@@ -74,6 +78,9 @@
           }, 320)
         }, 700)
     })
+
+
+
     </script>
 </body>
 </html>
