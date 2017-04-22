@@ -39,7 +39,7 @@ function signOut () {
   window.location.href = `${location.origin}`
 }
 
-function resetUser() {
+function resetUser () {
   fb.auth().signOut()
   setLocalVar('user', undefined)
   setLocalVar('token', undefined)
