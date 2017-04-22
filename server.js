@@ -27,3 +27,7 @@ app.get('/webui', (req, res) => {
 app.get('/app', (req, res) => {
   res.render(path.join(process.cwd(), 'src', 'webui', 'src', 'app.html'))
 })
+
+app.use((req, res) => {
+  res.render(path.join(process.cwd(), 'src', 'portal', 'src', 'index.html'))
+})
