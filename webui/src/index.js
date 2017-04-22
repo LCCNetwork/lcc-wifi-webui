@@ -4,22 +4,6 @@ const gAuthProvider = new fb.auth.GoogleAuthProvider()
 const imagesLoaded = require('imagesloaded')
 const ProgressBar = require('progressbar.js')
 
-// function bakeCookie(name, value) {
-//   var cookie = [name, '=', JSON.stringify(value), '; domain=.', window.location.host.toString(), '; path=/;'].join('')
-//   document.cookie = cookie
-// }
-//
-// function readCookie(name) {
-//   var result = document.cookie.match(new RegExp(name + '=([^;]+)'))
-//   result && (result = JSON.parse(result[1]))
-//   return result
-// }
-//
-// let state = readCookie('state')
-// console.log(state)
-// if (state === null) bakeCookie('state', {'testing': 'testing'})
-// console.log(document.cookie)
-
 let page = sessionStorage.getItem('page')
 
 const fbConfig = {
@@ -33,16 +17,14 @@ const fbConfig = {
 
 fb.initializeApp(fbConfig)
 
-function setState (name, value) {
-  let state = sessionStorage.getItem('state')
-  if (!state) state = {user: undefined, usage: undefined}
-
-  state[name] = value
-  sessionStorage.setItem('state', state)
+function setLocalVar (name, value) {
+  if (typeof value === 'object') localStorage.setItem(name, String(JSON.stringify(value)))
+  else localStorage.setItem(name, value)
 }
 
-function getState (name) {
-  return sessionStorage.getItem('state')[name]
+function getLocalVar (name) {
+  try { return JSON.parse(localStorage.getItem(name)) }
+  catch (err) { if (err) return localStorage.getItem(name) }
 }
 
 function timeout (time) {
@@ -53,67 +35,79 @@ function timeout (time) {
 
 function signOut () {
   fb.auth().signOut()
+  resetUser()
   console.log('User successfully signed out')
   window.location.href = `file://${__dirname}/index.html`
 }
 
-function loadData (user) {
-  user.getToken(true).then((token) => {
-    console.log(token)
-    Promise.race([timeout(1000),
-      fetch(`http://localhost:8080/auth`,
-        {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            token: token
-          })
-        }
-      )
-    ]).then((res) => res.json()).then((resJson) => {
-      if (!resJson.auth) { return window.alert('You are not authorized to use our WiFi service. If you believe that this may be a mistake, please contact an admin.') }
+function resetUser() {
+  fb.auth().signOut()
+  setLocalVar('user', undefined)
+  setLocalVar('token', undefined)
+  setLocalVar('usage', undefined)
+}
 
-      fetch(`http://localhost:8080/user/${user.uid}`, {method: 'GET', headers: { 'Accept': 'application/json' }})
-      .then(res => res.json()).then(resJson => {
-        setState('usage', resJson)
-        setState('user', user)
-        window.location.href = `file://${__dirname}/app.html`
-      })
-    }).catch((err) => {
-      fb.auth().signOut()
-      setState('user', undefined)
+function loadData () {
+  let token = getLocalVar('token')
+  console.log(token)
 
-      console.log(err)
-      console.error('Connection to local LCC WiFi server timed out')
-      alert('Please make sure that you are connected to the LCC WiFi network.')
+  Promise.race([timeout(5000),
+    fetch(`http://localhost:8080/auth`,
+      {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: token
+        })
+      }
+    )
+  ]).then((res) => res.json()).then((resJson) => {
+    if (!resJson.auth) { return window.alert('You are not authorized to use our WiFi service. If you believe that this may be a mistake, please contact an admin.') }
+
+    fetch(`http://localhost:8080/user/${getLocalVar('user').uid}`, {method: 'GET', headers: { 'Accept': 'application/json' }})
+    .then(res => res.json()).then(resJson => {
+      setLocalVar('usage', resJson)
+      window.location.href = `${window.location}app`
     })
   }).catch((err) => {
-    fb.auth().signOut()
-    setState('user', undefined)
+    resetUser()
 
-    console.log(err)
-    alert(err.message)
+    console.error(err)
+    console.error('Connection to local LCC WiFi server timed out')
+    alert('Please make sure that you are connected to the LCC WiFi network.')
   })
+
 }
 
 function openOauthWin () {
   fb.auth().signInWithPopup(gAuthProvider).then(data => {
     fb.auth().signInWithCredential(data.credential).then((user) => {
       console.log(user)
-      loadData(user)
-    }).catch((err) => { console.log(err) })
-  }).catch((err) => { console.error(err) })
+      user.getToken(true).then((token) => {
+        setLocalVar('user', user)
+        setLocalVar('token', token)
+        console.log(getLocalVar('token'))
+
+        loadData()
+      }).catch((err) => {
+        resetUser()
+
+        console.error(err)
+        alert(err.message)
+      })
+    }).catch((err) => { console.error(err) })
+  }).catch(() => {})
 }
 
 function loadApp () {
   $('.app-signout-button').bind('click', signOut)
   $('.app-refresh-button').bind('click', loadData)
-  $('.app-user-name').text(getState('user').displayName || getState('user').user.email || 'User')
-  $('.app-data-label.top').text(`${getState('usage').used / 1000} GB /`)
-  $('.app-data-label.bottom').text(`${getState('usage').total / 1000} GB`)
+  $('.app-user-name').text(getLocalVar('user').displayName || getLocalVar('user').email || 'User')
+  $('.app-data-label.top').text(`${getLocalVar('usage').used / 1000} GB /`)
+  $('.app-data-label.bottom').text(`${getLocalVar('usage').total / 1000} GB`)
 
   let dataDisplay = new ProgressBar.Circle('.app-data-display', {
     strokeWidth: 8,
@@ -124,7 +118,7 @@ function loadApp () {
     trailWidth: 8
   })
 
-  dataDisplay.animate(getState('usage').used / getState('usage').total)
+  dataDisplay.animate(getLocalVar('usage').used / getLocalVar('usage').total)
 }
 
 function loadIndex () {
@@ -135,10 +129,9 @@ function loadIndex () {
 }
 
 window.onload = () => {
-  console.log(page)
   if (page === 'index') {
     setTimeout(() => {
-      imagesLoaded('body', loadIndex())
+      imagesLoaded('body', loadIndex)
     }, 1200)
   } else if (page === 'app') {
     loadApp()

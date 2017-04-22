@@ -15,6 +15,14 @@ app.server = app.listen(80, function () {
   console.info('Server listening at http://%s:%s', host, port)
 })
 
+app.get('/app', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'app.html'))
+})
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'index.html'))
+})
+
 app.use((req, res) => {
   res.render('index')
 })
