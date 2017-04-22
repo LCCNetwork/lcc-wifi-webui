@@ -5,6 +5,7 @@ const imagesLoaded = require('imagesloaded')
 const ProgressBar = require('progressbar.js')
 
 let page = sessionStorage.getItem('page')
+if (typeof location.origin === 'undefined') location.origin = location.protocol + '//' + location.host
 
 const fbConfig = {
   apiKey: require('../apikey').apikey,
@@ -37,7 +38,7 @@ function signOut () {
   fb.auth().signOut()
   resetUser()
   console.log('User successfully signed out')
-  window.location.href = `file://${__dirname}/index.html`
+  window.location.href = `${location.origin}`
 }
 
 function resetUser() {
@@ -49,7 +50,6 @@ function resetUser() {
 
 function loadData () {
   let token = getLocalVar('token')
-  console.log(token)
 
   Promise.race([timeout(5000),
     fetch(`http://localhost:8080/auth`,
@@ -70,7 +70,7 @@ function loadData () {
     fetch(`http://localhost:8080/user/${getLocalVar('user').uid}`, {method: 'GET', headers: { 'Accept': 'application/json' }})
     .then(res => res.json()).then(resJson => {
       setLocalVar('usage', resJson)
-      window.location.href = `${window.location}app`
+      window.location.href = `${location.origin}/app`
     })
   }).catch((err) => {
     resetUser()
@@ -85,11 +85,9 @@ function loadData () {
 function openOauthWin () {
   fb.auth().signInWithPopup(gAuthProvider).then(data => {
     fb.auth().signInWithCredential(data.credential).then((user) => {
-      console.log(user)
       user.getToken(true).then((token) => {
         setLocalVar('user', user)
         setLocalVar('token', token)
-        console.log(getLocalVar('token'))
 
         loadData()
       }).catch((err) => {
