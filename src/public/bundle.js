@@ -11024,8 +11024,8 @@ function loadApp () {
   $('.app-signout-button').bind('click', signOut)
   $('.app-refresh-button').bind('click', loadData)
   $('.app-user-name').text(getLocalVar('user').displayName || getLocalVar('user').email || 'User')
-  $('.app-data-label.top').text(`${getLocalVar('usage').used / 1000} GB /`)
-  $('.app-data-label.bottom').text(`${getLocalVar('usage').total / 1000} GB`)
+  $('.app-data-label.top').text(`${(getLocalVar('usage').used / 1000).toFixed(2)} GB /`)
+  $('.app-data-label.bottom').text(`${(getLocalVar('usage').total / 1000).toFixed(2)} GB`)
 
   let dataDisplay = new ProgressBar.Circle('.app-data-display', {
     strokeWidth: 8,
