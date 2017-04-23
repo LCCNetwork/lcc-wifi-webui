@@ -10972,7 +10972,7 @@ function loadData () {
   let token = getLocalVar('token')
 
   Promise.race([timeout(5000),
-    fetch(`http://localhost:8080/auth`,
+    fetch(`http://192.168.1.1:8080/auth`,
       {
         method: 'POST',
         headers: {
@@ -10987,7 +10987,7 @@ function loadData () {
   ]).then((res) => res.json()).then((resJson) => {
     if (!resJson.auth) { return window.alert('You are not authorized to use our WiFi service. If you believe that this may be a mistake, please contact an admin.') }
 
-    fetch(`http://localhost:8080/user/${getLocalVar('user').uid}`, {method: 'GET', headers: { 'Accept': 'application/json' }})
+    fetch(`http://192.168.1.1:8080/user/${getLocalVar('user').uid}`, {method: 'GET', headers: { 'Accept': 'application/json' }})
     .then(res => res.json()).then(resJson => {
       setLocalVar('usage', resJson)
       window.location.href = `${location.origin}/app`
